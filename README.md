@@ -1,4 +1,4 @@
-# egg-graphql
+# @nsd/egg-graphql
 ---
 
 [GraphQL](http://facebook.github.io/graphql/)使用 Schema 来描述数据，并通过制定和实现 GraphQL 规范定义了支持 Schema 查询的 DSQL （Domain Specific Query Language，领域特定查询语言，由 FACEBOOK 提出。
@@ -36,7 +36,7 @@ GraphQl Tools 新增了对自定义 directive 的支持，通过 directive 我�
 安装对应的依赖 [egg-graphql] ：
 
 ```bash
-$ npm i --save egg-graphql
+$ npm i --save @nsd/egg-graphql
 ```
 
 开启插件：
@@ -45,7 +45,7 @@ $ npm i --save egg-graphql
 // config/plugin.js
 exports.graphql = {
   enable: true,
-  package: 'egg-graphql',
+  package: '@nsd/egg-graphql',
 };
 ```
 
@@ -65,6 +65,19 @@ exports.graphql = {
   onPreGraphQL: function* (ctx) {},
   // 开发工具 graphiQL 路由前的拦截器，建议用于做权限操作(如只提供开发者使用)
   onPreGraphiQL: function* (ctx) {},
+  // apollo server 的配置，除 `schema` `context` 外均可配置
+  apolloServerOptions: {
+    rootValue, // the value passed to the first resolve function
+    formatError, // a function to apply to every error before sending the response to clients
+    validationRules, // additional GraphQL validation rules to be applied to client-specified queries
+    formatParams, // a function applied for each query in a batch to format parameters before execution
+    formatResponse, // a function applied to each response after execution
+    tracing, // when set to true, collect and expose trace data in the Apollo Tracing format
+    logFunction, // a function called for logging events such as execution times
+    fieldResolver, // a custom default field resolver
+    debug, // a boolean that will print additional debug logging if execution errors occur
+    cacheControl, // when set to true, enable built-in support for Apollo Cache Control
+  },
 };
 ```
 
@@ -83,9 +96,9 @@ exports.graphql = {
 │   │   ├── project
 │   │   │   └── schema.graphql
 │   │   └── user  // 一个graphql模型
-│   │       ├── connector.js  
+│   │       ├── connector.js
 │   │       ├── resolver.js
-│   │       └── schema.graphql 
+│   │       └── schema.graphql
 │   ├── model
 │   │   └── user.js
 │   ├── public

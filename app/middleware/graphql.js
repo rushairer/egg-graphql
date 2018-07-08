@@ -18,17 +18,24 @@ module.exports = (_, app) => {
         if (options.onPreGraphiQL) {
           await options.onPreGraphiQL(ctx);
         }
-        return graphiqlKoa({
+        await graphiqlKoa({
           endpointURL: graphQLRouter,
         })(ctx);
+        await next();
+        return;
       }
       if (options.onPreGraphQL) {
         await options.onPreGraphQL(ctx);
       }
-      return graphqlKoa({
-        schema: app.schema,
-        context: ctx,
-      })(ctx);
+      const apolloServerOptions = Object.assign(
+        {},
+        options.apolloServerOptions,
+        {
+          schema: app.schema,
+          context: ctx,
+        }
+      );
+      await graphqlKoa(apolloServerOptions)(ctx);
     }
     await next();
   };
