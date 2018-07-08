@@ -1,4 +1,4 @@
-# @nsd/egg-graphql
+# @switchdog/egg-graphql
 ---
 
 [GraphQL](http://facebook.github.io/graphql/)使用 Schema 来描述数据，并通过制定和实现 GraphQL 规范定义了支持 Schema 查询的 DSQL （Domain Specific Query Language，领域特定查询语言，由 FACEBOOK 提出。
@@ -36,7 +36,7 @@ GraphQl Tools 新增了对自定义 directive 的支持，通过 directive 我�
 安装对应的依赖 [egg-graphql] ：
 
 ```bash
-$ npm i --save @nsd/egg-graphql
+$ npm i --save @switchdog/egg-graphql
 ```
 
 开启插件：
@@ -45,7 +45,7 @@ $ npm i --save @nsd/egg-graphql
 // config/plugin.js
 exports.graphql = {
   enable: true,
-  package: '@nsd/egg-graphql',
+  package: '@switchdog/egg-graphql',
 };
 ```
 

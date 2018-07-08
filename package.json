@@ -1,5 +1,5 @@
 {
-  "name": "@nsd/egg-graphql",
+  "name": "@switchdog/egg-graphql",
   "version": "2.2.0",
   "description": "egg graphql plugin",
   "eggPlugin": {
@@ -62,5 +62,6 @@
   },
   "homepage": "https://github.com/Carrotzpc/egg-graphql#readme",
   "author": "Carrotzpc <zhang.pc3@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "main": "app.js"
 }
