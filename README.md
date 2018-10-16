@@ -1,5 +1,12 @@
 # @switchdog/egg-graphql
 ---
+[![NPM version][npm-image]][npm-url]
+[![NPM download][download-image]][download-url]
+
+[npm-image]: https://img.shields.io/npm/v/@switchdog/egg-graphql.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/@switchdog/egg-graphql
+[download-image]: https://img.shields.io/npm/dm/@switchdog/egg-graphql.svg?style=flat-square
+[download-url]: https://npmjs.org/package/@switchdog/egg-graphql
 
 [GraphQL](http://facebook.github.io/graphql/)使用 Schema 来描述数据，并通过制定和实现 GraphQL 规范定义了支持 Schema 查询的 DSQL （Domain Specific Query Language，领域特定查询语言，由 FACEBOOK 提出。
 
