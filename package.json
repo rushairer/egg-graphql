@@ -1,6 +1,6 @@
 {
   "name": "@switchdog/egg-graphql",
-  "version": "2.2.0",
+  "version": "3.0.0-beta.1",
   "description": "egg graphql plugin",
   "eggPlugin": {
     "name": "graphql"

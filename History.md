@@ -1,3 +1,12 @@
+3.0.0-beta.1 / 2018-07-08
+==================
+
+* refactor (graphql.js): Upgrade to the v2 of apollo
+
+2.1.0 / 2018-07-08
+==================
+
+* fix middleware issue, add apolloServerOptions config support and update module version by autod
 
 2.1.0 / 2018-01-26
 ==================
