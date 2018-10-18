@@ -85,6 +85,32 @@ exports.graphql = {
     debug, // a boolean that will print additional debug logging if execution errors occur
     cacheControl, // when set to true, enable built-in support for Apollo Cache Control
   },
+  /*
+   * 开发者工具 graphiql 的配置
+   * Arguments:
+   *
+   * - endpointURL: the relative or absolute URL for the endpoint which GraphiQL will make queries to
+   * - (optional) query: the GraphQL query to pre-fill in the GraphiQL UI
+   * - (optional) variables: a JS object of variables to pre-fill in the GraphiQL UI
+   * - (optional) operationName: the operationName to pre-fill in the GraphiQL UI
+   * - (optional) result: the result of the query to pre-fill in the GraphiQL UI
+   * - (optional) passHeader: a string that will be added to the header object.
+   * For example "'Authorization': localStorage['Meteor.loginToken']" for meteor
+   * - (optional) editorTheme: a CodeMirror theme to be applied to the GraphiQL UI
+   * - (optional) websocketConnectionParams: an object to pass to the web socket server
+  */
+  graphiqlOptions: {
+    endpointURL: string;
+    subscriptionsEndpoint?: string;
+    query?: string;
+    variables?: Object;
+    operationName?: string;
+    result?: Object;
+    passHeader?: string;
+    editorTheme?: string;
+    websocketConnectionParams?: Object;
+    rewriteURL?: boolean;
+  }
 };
 ```
 

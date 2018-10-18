@@ -49,9 +49,11 @@ module.exports = (_, app) => {
         if (options.onPreGraphiQL) {
           await options.onPreGraphiQL(ctx);
         }
-        await graphiqlKoa({
-          endpointURL: graphQLRouter,
-        })(ctx);
+        const graphiqlOptions = Object.assign(
+          { endpointURL: graphQLRouter },
+          options.graphiqlOptions
+        );
+        await graphiqlKoa(graphiqlOptions)(ctx);
         await next();
         return;
       }
