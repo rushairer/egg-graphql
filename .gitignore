@@ -9,3 +9,4 @@ run
 test/fixtures/apps/model-app/run/
 .vscode/
 yarn.lock
+.history/
