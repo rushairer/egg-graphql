@@ -1,14 +1,14 @@
-3.0.0 / 2019-0414
+3.0.0 / 2019-04-14 (by Carrotzpc)
 ==================
 
   * merge eggjs/egg-graphql
 
-3.0.0-beta.2 / 2018-10-18
+3.0.0-beta.2 / 2018-10-18 (by Carrotzpc)
 ==================
 
   * add graphiqlOptions support
 
-3.0.0-beta.1 / 2018-10-16
+3.0.0-beta.1 / 2018-10-16 (by Carrotzpc)
 ==================
 
   * refactor (graphql.js): Upgrade to the v2 of apollo
@@ -23,7 +23,7 @@
 
   * refactor (graphql.js): Upgrade to the v2 of apollo (#18)
 
-2.1.0 / 2018-07-08
+2.1.0 / 2018-07-08 (by Carrotzpc)
 ==================
 
   * fix middleware issue, add apolloServerOptions config support and update module version by autod
