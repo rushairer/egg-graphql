@@ -1,6 +1,6 @@
 {
   "name": "@switchdog/egg-graphql",
-  "version": "3.0.0",
+  "version": "3.1.0-beta.1",
   "description": "egg graphql plugin",
   "eggPlugin": {
     "name": "graphql"
@@ -49,7 +49,8 @@
     "agent.js",
     "config",
     "app",
-    "lib"
+    "lib",
+    "index.d.ts"
   ],
   "ci": {
     "version": "8, 9"

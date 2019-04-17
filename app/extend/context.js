@@ -8,7 +8,6 @@ module.exports = {
    * connector instance
    * @member Context#connector
    */
-
   get connector() {
     /* istanbul ignore else */
     if (!this[SYMBOL_CONNECTOR]) {
@@ -25,7 +24,6 @@ module.exports = {
    * graphql instance access
    * @member Context#graphql
    */
-
   get graphql() {
     return this.service.graphql;
   },
