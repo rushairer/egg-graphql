@@ -8,6 +8,8 @@
 [download-image]: https://img.shields.io/npm/dm/@switchdog/egg-graphql.svg?style=flat-square
 [download-url]: https://npmjs.org/package/@switchdog/egg-graphql
 
+> [🎺体验 3.2 版本，更愉快的 apollo-server 使用体验](https://github.com/Carrotzpc/egg-graphql/tree/next#readme)
+
 [GraphQL](http://facebook.github.io/graphql/)使用 Schema 来描述数据，并通过制定和实现 GraphQL 规范定义了支持 Schema 查询的 DSQL （Domain Specific Query Language，领域特定查询语言，由 FACEBOOK 提出。
 
 ![graphql](http://upload-images.jianshu.io/upload_images/551828-8d055caea7562605.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
@@ -43,7 +45,7 @@ GraphQl Tools 新增了对自定义 directive 的支持，通过 directive 我�
 安装对应的依赖 [egg-graphql] ：
 
 ```bash
-$ npm i --save @switchdog/egg-graphql
+$ npm i --save @switchdog/egg-graphql@3.1.0-beta.1
 ```
 
 开启插件：
