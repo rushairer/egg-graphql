@@ -38,7 +38,7 @@ GraphQl Tools 新增了对自定义 directive 的支持，通过 directive 我�
 
 这些我们都会集成到 [egg-graphql](https://github.com/eggjs/egg-graphql) 插件中。
 
-### 安装与配置
+## 安装与配置
 
 安装对应的依赖 [egg-graphql] ：
 
@@ -54,6 +54,8 @@ exports.graphql = {
   enable: true,
   package: '@switchdog/egg-graphql',
 };
+// 添加中间件拦截请求
+exports.middleware = [ 'graphql' ];
 ```
 
 在 `config/config.${env}.js` 配置提供 graphql 的路由。
@@ -73,6 +75,7 @@ exports.graphql = {
   // 开发工具 graphiQL 路由前的拦截器，建议用于做权限操作(如只提供开发者使用)
   onPreGraphiQL: function* (ctx) {},
   // apollo server 的配置，除 `schema` `context` 外均可配置
+  // 详见 https://www.apollographql.com/docs/apollo-server/api/apollo-server
   apolloServerOptions: {
     rootValue, // the value passed to the first resolve function
     formatError, // a function to apply to every error before sending the response to clients
@@ -84,38 +87,22 @@ exports.graphql = {
     fieldResolver, // a custom default field resolver
     debug, // a boolean that will print additional debug logging if execution errors occur
     cacheControl, // when set to true, enable built-in support for Apollo Cache Control
+    subscriptions, // String defining the path for subscriptions or an Object to customize the subscriptions server. Set to false to disable subscriptions
+    playground, // GraphQL Playground 开发工具配置，详见 https://github.com/prisma/graphql-playground#usage
+    // ...
   },
   /*
-   * 开发者工具 graphiql 的配置
-   * Arguments:
-   *
-   * - endpointURL: the relative or absolute URL for the endpoint which GraphiQL will make queries to
-   * - (optional) query: the GraphQL query to pre-fill in the GraphiQL UI
-   * - (optional) variables: a JS object of variables to pre-fill in the GraphiQL UI
-   * - (optional) operationName: the operationName to pre-fill in the GraphiQL UI
-   * - (optional) result: the result of the query to pre-fill in the GraphiQL UI
-   * - (optional) passHeader: a string that will be added to the header object.
-   * For example "'Authorization': localStorage['Meteor.loginToken']" for meteor
-   * - (optional) editorTheme: a CodeMirror theme to be applied to the GraphiQL UI
-   * - (optional) websocketConnectionParams: an object to pass to the web socket server
-  */
-  graphiqlOptions: {
-    endpointURL: string;
-    subscriptionsEndpoint?: string;
-    query?: string;
-    variables?: Object;
-    operationName?: string;
-    result?: Object;
-    passHeader?: string;
-    editorTheme?: string;
-    websocketConnectionParams?: Object;
-    rewriteURL?: boolean;
-  }
+   * ⚠️开发者工具 graphiql 的配置 (已废弃)，
+   * ⚠️请使用 `apolloServerOptions` 中的 `playground` 进行配置
+   */
+  // graphiqlOptions,
 };
-
-// 添加中间件拦截请求
-exports.middleware = [ 'graphql' ];
 ```
+## 开发调试
+
+使用 GraphQL Playground 工具进行开发调试，详见 https://www.apollographql.com/docs/apollo-server/features/graphql-playground
+
+<img alt="GraphQL Playground" src="https://raw.githubusercontent.com/apollographql/apollo-server/HEAD/docs/source/images/graphql-playground.png">
 
 ## 使用方式
 

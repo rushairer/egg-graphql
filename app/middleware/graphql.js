@@ -5,31 +5,32 @@
 // ware.
 const { graphqlKoa } = require('apollo-server-koa/dist/koaApollo');
 
-// This has been newly imported, because in v2 of apollo-server, this is removed.
-const { resolveGraphiQLString } = require('apollo-server-module-graphiql');
+// Use graphql playground in v2.
+const {
+  renderPlaygroundPage,
+} = require('@apollographql/graphql-playground-html');
+const { createPlaygroundOptions } = require('apollo-server-core');
 
 /**
- This function is directly copied from:
- https://github.com/apollographql/apollo-server/blob/300c0cd12b56be439b206d55131e1b93a9e6dade/packages/apollo-server-koa/src/koaApollo.ts#L51
-
- And now this has been removed since v2 at:
- https://github.com/apollographql/apollo-server/commit/dbaa465646b0acb839860a85bfd68fb4379d64ab#diff-64af8fdf76996fa3ed4e498d44124800
-
- So we must keep this here to be compatible with what it was before.
- Thus users can directly use that by upgrading graphql to the v2 WITHOUT
- doing any other big changes.
-
- * @param {Object} options The `options` of graphiqlKoa.
- * @return {Promise} The result of the graphiqlKoa.
+ * GraphQL Playground
+ *
+ * https://github.com/apollographql/apollo-server/blob/2f773625c0c608ea91fa1d184ed13d149044f545/packages/apollo-server-koa/src/ApolloServer.ts#L183
+ * @param {Object} options The `options` of graphql playground.
+ * @return {Promise} The result of the graphql playground.
  */
-function graphiqlKoa(options) {
+function graphqlPlayground(options) {
   return ctx => {
-    const query = ctx.request.query;
-    return resolveGraphiQLString(query, options, ctx)
-      .then(graphiqlString => {
-        ctx.set('Content-Type', 'text/html');
-        ctx.body = graphiqlString;
-      });
+    const playgroundRenderPageOptions = {
+      endpoint: options.endpointURL,
+      subscriptionEndpoint: options.subscriptionsPath,
+      ...createPlaygroundOptions(options),
+    };
+    ctx.set('Content-Type', 'text/html');
+    const playground = renderPlaygroundPage(
+      playgroundRenderPageOptions
+    );
+    ctx.body = playground;
+    return;
   };
 }
 
@@ -49,11 +50,14 @@ module.exports = (_, app) => {
         if (options.onPreGraphiQL) {
           await options.onPreGraphiQL(ctx);
         }
-        const graphiqlOptions = Object.assign(
-          { endpointURL: graphQLRouter },
-          options.graphiqlOptions
+        const playgroundOptions = Object.assign(
+          {
+            endpointURL: graphQLRouter,
+            subscriptionsPath: options.subscriptions && options.subscriptions.path,
+          },
+          options.playgroundOptions
         );
-        await graphiqlKoa(graphiqlOptions)(ctx);
+        await graphqlPlayground(playgroundOptions)(ctx);
         await next();
         return;
       }

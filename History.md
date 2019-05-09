@@ -1,3 +1,8 @@
+3.1.0-beta.2 / 2019-05-09 (by Carrotzpc)
+==================
+
+  * use GraphQL Playground instead
+
 3.1.0-beta.1 / 2019-04-17 (by Carrotzpc)
 ==================
 
