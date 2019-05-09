@@ -8,6 +8,62 @@
 [download-image]: https://img.shields.io/npm/dm/@switchdog/egg-graphql.svg?style=flat-square
 [download-url]: https://npmjs.org/package/@switchdog/egg-graphql
 
+## 关于 v3.2 版本
+
+> **⚠️目前 v3.2 版本还在内测中，由于新的中间件完全采用 apollo-server-koa 的方式实现，新增了很多逻辑，稳定性、兼容性有待验证，不建议用于生产环境。**
+
+重写了中间件的实现方式，使用 GraphQL Playground 作为开发工具，可以在 eggjs 中更愉快的使用 apollo-server-koa:
+
+```js
+// app/middleware/graphql.js
+const { ApolloServer } = require('apollo-server-koa');
+const { get } = require('lodash');
+
+module.exports = (_, app) => {
+  const options = app.config.graphql;
+  const graphQLRouter = options.router || '/graphql';
+  let apolloServer;
+
+  return async (ctx, next) => {
+    // init apollo server
+    if (!apolloServer) {
+      const { getApolloServerOptions } = options;
+      const apolloServerOptions = Object.assign(
+        {
+          // log the error stack by default
+          formatError: error => {
+            const stacktrace = (get(error, 'extensions.exception.stacktrace') || []).join('\n');
+            ctx.logger.error('egg-graphql', stacktrace);
+            return error;
+          },
+        },
+        options.apolloServerOptions,
+        // pass ctx to getApolloServerOptions
+        getApolloServerOptions && getApolloServerOptions(ctx),
+        // pass schema and context to apollo server
+        {
+          schema: app.schema,
+          context: ctx,
+        }
+      );
+      apolloServer = new ApolloServer(apolloServerOptions);
+      apolloServer.applyMiddleware({ app, path: graphQLRouter });
+    }
+
+    const { onPreGraphQL, onPrePlayground, playground } = options;
+    if (ctx.path === graphQLRouter) {
+      if (ctx.request.accepts([ 'json', 'html' ]) === 'html') {
+        playground && onPrePlayground && onPrePlayground(ctx);
+      } else {
+        onPreGraphQL && onPreGraphQL(ctx);
+      }
+    }
+
+    await next();
+  };
+};
+```
+
 [GraphQL](http://facebook.github.io/graphql/)使用 Schema 来描述数据，并通过制定和实现 GraphQL 规范定义了支持 Schema 查询的 DSQL （Domain Specific Query Language，领域特定查询语言，由 FACEBOOK 提出。
 
 ![graphql](http://upload-images.jianshu.io/upload_images/551828-8d055caea7562605.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
@@ -36,14 +92,14 @@
 
 GraphQl Tools 新增了对自定义 directive 的支持，通过 directive 我们可以实现一些切面相关的事情：权限、缓存等。(例子可见 `test/fixtures/app/graphql-app/app/graphql/directives` 目录)
 
-这些我们都会集成到 [egg-graphql](https://github.com/eggjs/egg-graphql) 插件中。
+这些我们都会集成到 [egg-graphql](https://github.com/Carrotzpc/egg-graphql) 插件中。
 
 ## 安装与配置
 
 安装对应的依赖 [egg-graphql] ：
 
 ```bash
-$ npm i --save @switchdog/egg-graphql
+$ npm i --save @switchdog/egg-graphql@3.2.0-alpha.0
 ```
 
 开启插件：
@@ -68,11 +124,9 @@ exports.graphql = {
   app: true,
   // 是否加载到 agent 上，默认关闭
   agent: false,
-  // 是否加载开发者工具 graphiql, 默认开启。路由同 router 字段。使用浏览器打开该可见。
-  graphiql: true,
   // graphQL 路由前的拦截器
   onPreGraphQL: function* (ctx) {},
-  // 开发工具 graphiQL 路由前的拦截器，建议用于做权限操作(如只提供开发者使用)
+  // 开发工具 apollo playground 路由前的拦截器，建议用于做权限操作(如只提供开发者使用)
   onPreGraphiQL: function* (ctx) {},
   // apollo server 的配置，除 `schema` `context` 外均可配置
   // 详见 https://www.apollographql.com/docs/apollo-server/api/apollo-server
@@ -91,11 +145,9 @@ exports.graphql = {
     playground, // GraphQL Playground 开发工具配置，详见 https://github.com/prisma/graphql-playground#usage
     // ...
   },
-  /*
-   * ⚠️开发者工具 graphiql 的配置 (已废弃)，
-   * ⚠️请使用 `apolloServerOptions` 中的 `playground` 进行配置
-   */
-  // graphiqlOptions,
+  // 用于获取 apollo server 的配置，`ctx` 会作为参数传进来，可以用来做一些特殊操作，例如 `formatError` 时打印错误日志
+  // `getApolloServerOptions` 方式获取的配置最终会通过 Object.assign() 的方式 merge 到 apolloServerOptions 上
+  getApolloServerOptions: function* (ctx) {},
 };
 ```
 ## 开发调试

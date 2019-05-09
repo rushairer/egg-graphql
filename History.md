@@ -1,3 +1,8 @@
+3.2.0-alpha.0 / 2019-05-09 (by Carrotzpc)
+==================
+
+  * refactor middleware: use apollo-server-koa directly.
+
 3.1.0-beta.2 / 2019-05-09 (by Carrotzpc)
 ==================
 
