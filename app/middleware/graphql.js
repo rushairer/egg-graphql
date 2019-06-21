@@ -37,9 +37,9 @@ module.exports = (_, app) => {
     const { onPreGraphQL, onPrePlayground, playground } = options;
     if (ctx.path === graphQLRouter) {
       if (ctx.request.accepts([ 'json', 'html' ]) === 'html') {
-        playground && onPrePlayground && onPrePlayground(ctx);
+        playground && onPrePlayground && await onPrePlayground(ctx);
       } else {
-        onPreGraphQL && onPreGraphQL(ctx);
+        onPreGraphQL && await onPreGraphQL(ctx);
       }
     }
 
