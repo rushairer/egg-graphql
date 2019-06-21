@@ -1,3 +1,8 @@
+3.2.0-alpha.1 / 2019-06-21 (by Carrotzpc)
+==================
+
+  * add miss 'await' for onPreGraphQL and onPrePlayground.
+
 3.2.0-alpha.0 / 2019-05-09 (by Carrotzpc)
 ==================
 
