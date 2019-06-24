@@ -1,3 +1,8 @@
+3.2.0-alpha.2 / 2019-06-24 (by Carrotzpc)
+==================
+
+  * move onPreGraphQL onPrePlayground at the top of the middleware.
+
 3.2.0-alpha.1 / 2019-06-21 (by Carrotzpc)
 ==================
 
