@@ -9,6 +9,15 @@ module.exports = (_, app) => {
   let apolloServer;
 
   return async (ctx, next) => {
+    const { onPreGraphQL, onPrePlayground, playground } = options;
+    if (ctx.path === graphQLRouter) {
+      if (ctx.request.accepts([ 'json', 'html' ]) === 'html') {
+        playground && onPrePlayground && await onPrePlayground(ctx);
+      } else {
+        onPreGraphQL && await onPreGraphQL(ctx);
+      }
+    }
+
     // init apollo server
     if (!apolloServer) {
       const { getApolloServerOptions } = options;
@@ -32,15 +41,6 @@ module.exports = (_, app) => {
       );
       apolloServer = new ApolloServer(apolloServerOptions);
       apolloServer.applyMiddleware({ app, path: graphQLRouter });
-    }
-
-    const { onPreGraphQL, onPrePlayground, playground } = options;
-    if (ctx.path === graphQLRouter) {
-      if (ctx.request.accepts([ 'json', 'html' ]) === 'html') {
-        playground && onPrePlayground && await onPrePlayground(ctx);
-      } else {
-        onPreGraphQL && await onPreGraphQL(ctx);
-      }
     }
 
     await next();
