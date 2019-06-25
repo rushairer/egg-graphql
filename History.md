@@ -1,3 +1,8 @@
+3.2.0-alpha.3 / 2019-06-24 (by Carrotzpc)
+==================
+
+  * use ctx of each request.
+
 3.2.0-alpha.2 / 2019-06-24 (by Carrotzpc)
 ==================
 
