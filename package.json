@@ -17,6 +17,7 @@
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.1",
     "graphql-tools": "^4.0.4",
+    "koa-compose": "^4.1.0",
     "lodash": "^4.17.11"
   },
   "devDependencies": {
