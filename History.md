@@ -1,3 +1,8 @@
+3.2.0-beta.1 / 2019-09-04 (by Carrotzpc)
+==================
+
+  * add Subscription support.
+
 3.2.0-alpha.3 / 2019-06-24 (by Carrotzpc)
 ==================
 

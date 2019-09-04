@@ -18,49 +18,62 @@
 // app/middleware/graphql.js
 const { ApolloServer } = require('apollo-server-koa');
 const { get } = require('lodash');
+const compose = require('koa-compose');
 
 module.exports = (_, app) => {
   const options = app.config.graphql;
   const graphQLRouter = options.router || '/graphql';
-  let apolloServer;
-
-  return async (ctx, next) => {
-    // init apollo server
-    if (!apolloServer) {
-      const { getApolloServerOptions } = options;
-      const apolloServerOptions = Object.assign(
-        {
-          // log the error stack by default
-          formatError: error => {
-            const stacktrace = (get(error, 'extensions.exception.stacktrace') || []).join('\n');
-            ctx.logger.error('egg-graphql', stacktrace);
-            return error;
-          },
-        },
-        options.apolloServerOptions,
-        // pass ctx to getApolloServerOptions
-        getApolloServerOptions && getApolloServerOptions(ctx),
-        // pass schema and context to apollo server
-        {
-          schema: app.schema,
-          context: ctx,
-        }
-      );
-      apolloServer = new ApolloServer(apolloServerOptions);
-      apolloServer.applyMiddleware({ app, path: graphQLRouter });
+  // get apollo server options
+  const { getApolloServerOptions } = options;
+  const apolloServerOptions = Object.assign(
+    {
+      // log the error stack by default
+      formatError: error => {
+        const stacktrace = (get(error, 'extensions.exception.stacktrace') || []).join('\n');
+        app.logger.error('egg-graphql', stacktrace);
+        return error;
+      },
+    },
+    options.apolloServerOptions,
+    // pass app to getApolloServerOptions
+    getApolloServerOptions && getApolloServerOptions(app),
+    // pass schema and context to apollo server
+    {
+      schema: app.schema,
+      context: ({ ctx }) => ctx, // use ctx of each request
     }
-
-    const { onPreGraphQL, onPrePlayground, playground } = options;
+  );
+  const onPreMiddleware = async (ctx, next) => {
+    const { onPreGraphQL, onPrePlayground } = options;
+    const { playground } = apolloServerOptions;
     if (ctx.path === graphQLRouter) {
       if (ctx.request.accepts([ 'json', 'html' ]) === 'html') {
-        playground && onPrePlayground && onPrePlayground(ctx);
+        playground && onPrePlayground && await onPrePlayground(ctx);
       } else {
-        onPreGraphQL && onPreGraphQL(ctx);
+        onPreGraphQL && await onPreGraphQL(ctx);
       }
     }
-
     await next();
   };
+  const middlewares = [ onPreMiddleware ];
+
+  // init apollo server
+  const apolloServer = new ApolloServer(apolloServerOptions);
+  apolloServer.applyMiddleware({
+    app: {
+      use: middleware => middlewares.push(middleware), // collecting middlewares
+    },
+    path: graphQLRouter,
+  });
+  // add Subscription support
+  if (apolloServerOptions.subscriptions) {
+    app.once('server', server => {
+      // websocket
+      apolloServer.installSubscriptionHandlers(server);
+    });
+  }
+
+  return compose(middlewares);
 };
 ```
 
@@ -99,7 +112,7 @@ GraphQl Tools 新增了对自定义 directive 的支持，通过 directive 我�
 安装对应的依赖 [egg-graphql] ：
 
 ```bash
-$ npm i --save @switchdog/egg-graphql@3.2.0-alpha.3
+$ npm i --save @switchdog/egg-graphql@3.2.0-beta.1
 ```
 
 开启插件：
@@ -145,9 +158,9 @@ exports.graphql = {
     playground, // GraphQL Playground 开发工具配置，详见 https://github.com/prisma/graphql-playground#usage
     // ...
   },
-  // 用于获取 apollo server 的配置，`ctx` 会作为参数传进来，可以用来做一些特殊操作，例如 `formatError` 时打印错误日志
+  // 用于获取 apollo server 的配置，`app` 会作为参数传进来，可以用来做一些特殊操作，例如 `formatError` 时利用 `app.logger` 打印错误日志
   // `getApolloServerOptions` 方式获取的配置最终会通过 Object.assign() 的方式 merge 到 apolloServerOptions 上
-  getApolloServerOptions: function* (ctx) {},
+  getApolloServerOptions: function* (app) {},
 };
 ```
 ## 开发调试
