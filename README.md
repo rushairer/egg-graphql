@@ -10,9 +10,7 @@
 
 ## 关于 v3.2 版本
 
-> **⚠️目前 v3.2 版本还在内测中，由于新的中间件完全采用 apollo-server-koa 的方式实现，新增了很多逻辑，稳定性、兼容性有待验证，不建议用于生产环境。**
-
-重写了中间件的实现方式，使用 GraphQL Playground 作为开发工具，可以在 eggjs 中更愉快的使用 apollo-server-koa:
+新的 v3.2 版本使用 apollo-server-koa 重写了中间件的实现方式，使用 GraphQL Playground 作为开发工具，可以在 eggjs 中更愉快的使用 apollo-server-koa:
 
 ```js
 // app/middleware/graphql.js
@@ -82,42 +80,24 @@ module.exports = (_, app) => {
 };
 ```
 
-[GraphQL](http://facebook.github.io/graphql/)使用 Schema 来描述数据，并通过制定和实现 GraphQL 规范定义了支持 Schema 查询的 DSQL （Domain Specific Query Language，领域特定查询语言，由 FACEBOOK 提出。
+### v3.2 版本的优势：
 
-![graphql](http://upload-images.jianshu.io/upload_images/551828-8d055caea7562605.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
-传统 web 应用通过开发服务给客户端提供接口是很常见的场景。而当需求或数据发生变化时，应用需要修改或者重新创建新的接口。长此以后，会造成服务器代码的不断增长，接口内部逻辑复杂难以维护。而 GraphQL 则通过以下特性解决这个问题：
-
-- 声明式。查询的结果格式由请求方（即客户端）决定而非响应方（即服务器端）决定。你不需要编写很多额外的接口来适配客户端请求
-- 可组合。GraphQL 的查询结构可以自由组合来满足需求。
-- 强类型。每个 GraphQL 查询必须遵循其设定的类型才会被执行。
-
-也就是说，通过以上的三个特性，当需求发生变化，客户端只需要编写能满足新需求的查询结构，如果服务端能提供的数据满足需求，服务端代码几乎不需要做任何的修改。
-
-目前 egg-graphql 已经完全支持在 egg 中使用 GraphQL 查询语法，可直接查看文末参考链接，下文为插件设计。
-
-## 技术选型
-
-我们会使用 [GraphQL Tools](http://dev.apollodata.com/tools/graphql-tools/index.html)配合 eggjs 完成 GraphQL 服务的搭建。 GraphQL Tools 建立了一种 GraphQL-first 的开发哲学，主要体现在以下三个方面：
-
-- 使用官方的 GraphQL schema 进行编程。 GraphQL Tools 提供工具，让你可以书写标准的 GraphQL schema，并完全支持里面的特性。
-- schema 与业务逻辑分离。 GraphQL Tools 建议我们把 GraphQL 逻辑分为四个部分: Schema, Resolvers, Models, 和 Connectors。
-- 为很多特殊场景提供标准解决方案。最大限度标准化 GraphQL 应用。
-
-我们也会使用 [GraphQL Server](http://dev.apollodata.com/tools/graphql-server/index.html) 来完成 GraphQL 查询语言 DSQL 的解析。
-
-同时我们会使用 [dataloader](https://github.com/facebook/dataloader) 来优化数据缓存。(例子可见 `test/fixtures/app/graphql-app` 目录)
-
-GraphQl Tools 新增了对自定义 directive 的支持，通过 directive 我们可以实现一些切面相关的事情：权限、缓存等。(例子可见 `test/fixtures/app/graphql-app/app/graphql/directives` 目录)
-
-这些我们都会集成到 [egg-graphql](https://github.com/Carrotzpc/egg-graphql) 插件中。
+* 基于 apollo-server，具有 apollo-server 的所有优势
+* 使用 Apollo Playground 作为调试界面，体验更佳
+* 完全兼容 egg-graphql，支持 `onPreGraphQL(ctx)` 和 `onPrePlayground(ctx)` （`onPrePlayground` 替代原来的 `onPreGraphiQL`）
+* 默认打印错误日志，方便定位问题，可通过 `apolloServerOptions.formatError` 覆盖默认逻辑
+* 可以以函数的方式传递 apollo-server 配置：`getApolloServerOptions(app)`，且能在函数中拿到 eggjs 的 app 实例
+* 支持 SchemaDirective
+* 支持 Subscriptions by@Abenx
 
 ## 安装与配置
 
 安装对应的依赖 [egg-graphql] ：
 
 ```bash
-$ npm i --save @switchdog/egg-graphql@3.2.0-beta.1
+$ yarn add @switchdog/egg-graphql@latest
+# or
+$ npm i @switchdog/egg-graphql@latest
 ```
 
 开启插件：
@@ -145,7 +125,7 @@ exports.graphql = {
   // graphQL 路由前的拦截器
   onPreGraphQL: function* (ctx) {},
   // 开发工具 apollo playground 路由前的拦截器，建议用于做权限操作(如只提供开发者使用)
-  onPreGraphiQL: function* (ctx) {},
+  onPrePlayground: function* (ctx) {},
   // apollo server 的配置，除 `schema` `context` 外均可配置
   // 详见 https://www.apollographql.com/docs/apollo-server/api/apollo-server
   apolloServerOptions: {
