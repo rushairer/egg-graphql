@@ -1,3 +1,8 @@
+3.2.0-beta.2 / 2019-09-05 (by Abenx)
+==================
+
+  * Fix: ctx is undefined when websocket on connect.
+
 3.2.0-beta.1 / 2019-09-04 (by Carrotzpc)
 ==================
 

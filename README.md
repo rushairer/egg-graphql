@@ -42,10 +42,9 @@ module.exports = (_, app) => {
       schema: app.schema,
       context: ({ ctx, connection }) => {
         if (connection) {
-          return connection.context
-        } else {
-          return ctx
+          return connection.context;
         }
+        return ctx;
       },
     }
   );

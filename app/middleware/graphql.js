@@ -24,13 +24,11 @@ module.exports = (_, app) => {
     // pass schema and context to apollo server
     {
       schema: app.schema,
-      context: ({ ctx }) => ctx, // use ctx of each request
       context: ({ ctx, connection }) => {
         if (connection) {
-          return connection.context
-        } else {
-          return ctx
+          return connection.context;
         }
+        return ctx;
       },
     }
   );
