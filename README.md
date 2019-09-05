@@ -40,7 +40,13 @@ module.exports = (_, app) => {
     // pass schema and context to apollo server
     {
       schema: app.schema,
-      context: ({ ctx }) => ctx, // use ctx of each request
+      context: ({ ctx, connection }) => {
+        if (connection) {
+          return connection.context
+        } else {
+          return ctx
+        }
+      },
     }
   );
   const onPreMiddleware = async (ctx, next) => {
@@ -160,7 +166,18 @@ exports.graphql = {
   },
   // 用于获取 apollo server 的配置，`app` 会作为参数传进来，可以用来做一些特殊操作，例如 `formatError` 时利用 `app.logger` 打印错误日志
   // `getApolloServerOptions` 方式获取的配置最终会通过 Object.assign() 的方式 merge 到 apolloServerOptions 上
-  getApolloServerOptions: function* (app) {},
+  getApolloServerOptions: function (app) {
+    // 如果想使用订阅，在进行 websocket 连接的时候传递 Authorization
+    return {
+      subscriptions: {
+        onConnect: (connectionParams, webSocket, context) => {
+          const ctx = app.createAnonymousContext()
+          ctx.request.header.Authorization = connectionParams.Authorization
+          return ctx
+        },
+      },
+    }
+  },
 };
 ```
 ## 开发调试

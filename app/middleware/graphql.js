@@ -25,6 +25,13 @@ module.exports = (_, app) => {
     {
       schema: app.schema,
       context: ({ ctx }) => ctx, // use ctx of each request
+      context: ({ ctx, connection }) => {
+        if (connection) {
+          return connection.context
+        } else {
+          return ctx
+        }
+      },
     }
   );
   const onPreMiddleware = async (ctx, next) => {
