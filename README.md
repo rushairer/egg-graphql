@@ -87,8 +87,9 @@ module.exports = (_, app) => {
 * 完全兼容 egg-graphql，支持 `onPreGraphQL(ctx)` 和 `onPrePlayground(ctx)` （`onPrePlayground` 替代原来的 `onPreGraphiQL`）
 * 默认打印错误日志，方便定位问题，可通过 `apolloServerOptions.formatError` 覆盖默认逻辑
 * 可以以函数的方式传递 apollo-server 配置：`getApolloServerOptions(app)`，且能在函数中拿到 eggjs 的 app 实例
-* 支持 SchemaDirective
-* 支持 Subscriptions by@Abenx
+* 支持 Directive 以及 SchemaDirective
+* 支持 Subscriptions by@[Abenx](https://github.com/rushairer)
+* 支持默认 `Query` 等的定义，方便组织代码目录，可通过 `extend` 的方式将 `Query`、`Mutation` 以及 `Subscription` 等定义到各自的文件夹中。默认关闭，可以通过设置 `defaultTypeDefsEnabled` 为 `true` 开启
 
 ## 安装与配置
 
@@ -122,6 +123,9 @@ exports.graphql = {
   app: true,
   // 是否加载到 agent 上，默认关闭
   agent: false,
+  // 是否添加默认的 `Query`、`Mutation` 以及 `Subscription` 定义，默认关闭
+  // 开启后可通过 `extend` 的方式将 `Query`、`Mutation` 以及 `Subscription` 定义到各自的文件夹中
+  defaultTypeDefsEnabled: false,
   // graphQL 路由前的拦截器
   onPreGraphQL: function* (ctx) {},
   // 开发工具 apollo playground 路由前的拦截器，建议用于做权限操作(如只提供开发者使用)
@@ -176,7 +180,7 @@ exports.graphql = {
 ├── app
 │   ├── graphql
 |   |   ├── common
-|   |   |   └── directive.js  // 自定义directive
+|   |   |   └── directive.js  // 自定义 directive
 │   │   ├── project
 │   │   │   └── schema.graphql
 │   │   ├── schemaDirectives

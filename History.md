@@ -1,3 +1,8 @@
+3.2.0-beta.4 / 2019-09-09 (by Carrotzpc)
+==================
+
+  * support default `Query` `Mutation` `Subscription` type define.
+
 3.2.0-beta.3 / 2019-09-05 (by Carrotzpc)
 ==================
 

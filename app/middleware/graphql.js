@@ -3,12 +3,12 @@
 const { ApolloServer } = require('apollo-server-koa');
 const { get } = require('lodash');
 const compose = require('koa-compose');
+const { getApolloServerOptsFromApp } = require('../../lib/utils');
 
 module.exports = (_, app) => {
   const options = app.config.graphql;
   const graphQLRouter = options.router || '/graphql';
   // get apollo server options
-  const { getApolloServerOptions } = options;
   const apolloServerOptions = Object.assign(
     {
       // log the error stack by default
@@ -18,9 +18,8 @@ module.exports = (_, app) => {
         return error;
       },
     },
-    options.apolloServerOptions,
     // pass app to getApolloServerOptions
-    getApolloServerOptions && getApolloServerOptions(app),
+    getApolloServerOptsFromApp(app),
     // pass schema and context to apollo server
     {
       schema: app.schema,
